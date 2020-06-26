@@ -44,6 +44,7 @@ script = ExtResource( 3 )
 position = Vector2( -398.221, -298.902 )
 anchor_mode = 0
 current = true
+zoom = Vector2( 6, 6 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="KinematicBody2D"]
 scale = Vector2( 0.551993, 0.554346 )

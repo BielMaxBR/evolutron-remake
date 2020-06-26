@@ -2,7 +2,10 @@ extends Node2D
 
 export(int, 0, 100) var numero_de_salas = 6
 export(Vector2) var area = Vector2(6,6)
-
+var parede = "#914400"
+var chao = "#47ff00"
+var porta = "#fff000"
+var muro = "#006d00"
 var rng = RandomNumberGenerator.new()
 
 func gerar_mapa_aberto():
@@ -148,7 +151,7 @@ func Coletar_posicao_do_tile(x, y, tile, scale):
 	return Vector2(rex,rey)
 	pass
 
-func gerar_tilemap(pos, tile, primeiro):
+func gerar_tilemap(pos, tile, imagem):
 	var newTileMap = TileMap.new()
 
 	$".".add_child(newTileMap)
@@ -157,35 +160,64 @@ func gerar_tilemap(pos, tile, primeiro):
 	newTileMap.cell_size = tile.cell_size
 	newTileMap.tile_set = tile.tile_set
 	newTileMap.z_index = -1
-	if primeiro:
-		$KinematicBody2D.position = Coletar_posicao_do_tile(12,9,newTileMap.cell_size,newTileMap.transform.get_scale())
+
 	for i in range(0,24+1):
 		for f in range(0,18+1):
-			var tileIndex = tile.get_cell(i,f)
+			var tileIndex = 0
+			if ler_cores_da_imagem(imagem,i,f) == Color(parede)*255:
+				tileIndex = 0
+				
+			if ler_cores_da_imagem(imagem,i,f) == Color(chao)*255:
+				tileIndex = 1
+				
+			if ler_cores_da_imagem(imagem,i,f) == Color(porta)*255:
+				tileIndex = 2
+				
+			if ler_cores_da_imagem(imagem,i,f) == Color(muro)*255:
+				tileIndex = 5
+				
+				
 			if tileIndex != -1:
 				newTileMap.set_cell(i,f,tileIndex)
 
 	newTileMap.set_owner(get_tree().get_edited_scene_root())
 
+func gerar_dados_da_imagem(imagem):
+
+	var caminho = str("res://rooms/"+imagem)
+	var image_texture_resource = load(caminho)
+	
+	var image = image_texture_resource.get_data()
+	
+	return image
+
+	
+func ler_cores_da_imagem(img,x,y):
+	var data = gerar_dados_da_imagem(img)
+	data.lock()
+	var color = data.get_pixel(x,y)
+	return color*255
+	
 func gerar_andar(bigMap, tile):
 	var minimapa = criar_cena()
 	var primeiro = true
 	for y in range(0, len(minimapa)):
 		for x in range(0, len(minimapa[y])):
 			if minimapa[y][x] == "O":
-					
+
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
 				if primeiro:
-					gerar_tilemap(pos,tile,true)
+					gerar_tilemap(pos,tile,'spawn.png')
 					primeiro = false
 				else:
 					gerar_tilemap(pos,tile, false)
-					
 			
 func _ready():
 	var tilemap = get_node('BigMap')
 	var tile = $TileMap
 
 	gerar_andar(tilemap, tile)
-
+	print(ler_cores_da_imagem("spawn.png",0,0))
+	if ler_cores_da_imagem('spawn.png',0,0) == Color("#914400")*255:
+		print("dá certo")
 
