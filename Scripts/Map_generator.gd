@@ -62,7 +62,7 @@ func nova_sala(salas, area):
 	var cimaX = int(cima[0])
 	var cimaY = int(cima[1])
 	if cima[1] >= 1 and se_tem(cima,salas) == false:
-		salas_possiveis.append([cimaY,cimaY])
+		salas_possiveis.append([cimaX,cimaY])
 	#	print(">>> cima ",cima, salas.find(Array([cimaX,cimaY])))
 	var direitaX = int(direita[0])
 	var direitaY = int(direita[1])
