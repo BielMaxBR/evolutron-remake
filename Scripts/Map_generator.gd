@@ -161,25 +161,22 @@ func gerar_tilemap(pos, tile, imagem):
 	newTileMap.tile_set = tile.tile_set
 	newTileMap.z_index = -1
 
-	for i in range(0,24+1):
-		for f in range(0,18+1):
-			var tileIndex = 0
-			if ler_cores_da_imagem(imagem,i,f) == Color(parede)*255:
-				tileIndex = 0
-				
+	var tileIndex = 0
+	for i in range(0,24):
+		for f in range(0,18):
+			print(ler_cores_da_imagem(imagem,i,f))
 			if ler_cores_da_imagem(imagem,i,f) == Color(chao)*255:
 				tileIndex = 1
-				
-			if ler_cores_da_imagem(imagem,i,f) == Color(porta)*255:
-				tileIndex = 2
-				
-			if ler_cores_da_imagem(imagem,i,f) == Color(muro)*255:
-				tileIndex = 5
-				
-				
-			if tileIndex != -1:
 				newTileMap.set_cell(i,f,tileIndex)
-
+			elif ler_cores_da_imagem(imagem,i,f) == Color(parede)*255:
+				tileIndex = 0
+				newTileMap.set_cell(i,f,tileIndex)
+			elif ler_cores_da_imagem(imagem,i,f) == Color(porta)*255:
+				tileIndex = 2
+				newTileMap.set_cell(i,f,tileIndex)
+			elif ler_cores_da_imagem(imagem,i,f) == Color(muro)*255:
+				tileIndex = 5
+				newTileMap.set_cell(i,f,tileIndex)
 	newTileMap.set_owner(get_tree().get_edited_scene_root())
 
 func gerar_dados_da_imagem(imagem):
