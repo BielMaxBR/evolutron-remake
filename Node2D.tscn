@@ -27,6 +27,7 @@ format = 1
 tile_data = PoolIntArray( 5, 0, 0, 327685, 0, 0 )
 
 [node name="TileMap" type="TileMap" parent="."]
+visible = false
 scale = Vector2( 2, 2 )
 z_index = -1
 tile_set = ExtResource( 2 )
@@ -40,11 +41,22 @@ tile_data = PoolIntArray( -524259, 3, 0, 0, 5, 0, 1, 5, 0, 2, 0, 0, 3, 0, 0, 4, 
 position = Vector2( 398.221, 298.902 )
 script = ExtResource( 3 )
 
+[node name="Label" type="Label" parent="KinematicBody2D"]
+margin_left = 255.146
+margin_top = -283.46
+margin_right = 451.146
+margin_bottom = -150.46
+custom_colors/font_color = Color( 0.992157, 0.980392, 0.980392, 1 )
+custom_colors/font_outline_modulate = Color( 0.909804, 0.0666667, 0.282353, 1 )
+custom_colors/font_color_shadow = Color( 1, 0.0705882, 0.439216, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Camera2D" type="Camera2D" parent="KinematicBody2D"]
 position = Vector2( -398.221, -298.902 )
 anchor_mode = 0
 current = true
-zoom = Vector2( 6, 6 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="KinematicBody2D"]
 scale = Vector2( 0.551993, 0.554346 )
@@ -52,3 +64,5 @@ frames = SubResource( 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="KinematicBody2D"]
 shape = SubResource( 2 )
+[connection signal="map" from="." to="KinematicBody2D" method="_on_Node2D_map"]
+[connection signal="spawn" from="." to="KinematicBody2D" method="_on_Node2D_spawn"]

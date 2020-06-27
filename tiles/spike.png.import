@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/tileCorn.png-60fda9ba7914509677eaa87ba1bd925f.stex"
+path="res://.import/spike.png-fdbcc6d298a7deaa1447d60d136b88af.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://tileCorn.png"
-dest_files=[ "res://.import/tileCorn.png-60fda9ba7914509677eaa87ba1bd925f.stex" ]
+source_file="res://tiles/spike.png"
+dest_files=[ "res://.import/spike.png-fdbcc6d298a7deaa1447d60d136b88af.stex" ]
 
 [params]
 

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/sala4.png-7a31ba7c234b9f25069a50729bd585e0.stex"
+path="res://.import/exit.png-0e25cc5d4d4db3e80aaa0a9eba4eabe8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://rooms/enemy/sala4.png"
-dest_files=[ "res://.import/sala4.png-7a31ba7c234b9f25069a50729bd585e0.stex" ]
+source_file="res://rooms/exit.png"
+dest_files=[ "res://.import/exit.png-0e25cc5d4d4db3e80aaa0a9eba4eabe8.stex" ]
 
 [params]
 

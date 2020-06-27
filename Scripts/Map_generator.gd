@@ -2,11 +2,15 @@ extends Node2D
 
 export(int, 0, 100) var numero_de_salas = 6
 export(Vector2) var area = Vector2(6,6)
-var parede = "#914400"
-var chao = "#47ff00"
-var porta = "#fff000"
-var muro = "#006d00"
+var parede = Color("#914400")*255
+var chao = Color("#48ff00")*255
+var porta = Color("#ffee00")*255
+var muro = Color("#006d0f")*255
+var spike = Color("#000000")*255
 var rng = RandomNumberGenerator.new()
+
+signal spawn(pos)
+signal map(mapa)
 
 func gerar_mapa_aberto():
 	return '0'
@@ -161,21 +165,24 @@ func gerar_tilemap(pos, tile, imagem):
 	newTileMap.tile_set = tile.tile_set
 	newTileMap.z_index = -1
 
-	var tileIndex = 0
-	for i in range(0,24):
-		for f in range(0,18):
-			print(ler_cores_da_imagem(imagem,i,f))
-			if ler_cores_da_imagem(imagem,i,f) == Color(chao)*255:
-				tileIndex = 1
+	
+	for i in range(0,25):
+		for f in range(0,19):
+			var cor = ler_cores_da_imagem(imagem,i,f)
+			if cor == chao:
+				var tileIndex = 1
 				newTileMap.set_cell(i,f,tileIndex)
-			elif ler_cores_da_imagem(imagem,i,f) == Color(parede)*255:
-				tileIndex = 0
+			elif cor == parede:
+				var tileIndex = 0
 				newTileMap.set_cell(i,f,tileIndex)
-			elif ler_cores_da_imagem(imagem,i,f) == Color(porta)*255:
-				tileIndex = 2
+			elif cor == porta:
+				var tileIndex = 4
 				newTileMap.set_cell(i,f,tileIndex)
-			elif ler_cores_da_imagem(imagem,i,f) == Color(muro)*255:
-				tileIndex = 5
+			elif cor == muro:
+				var tileIndex = 2
+				newTileMap.set_cell(i,f,tileIndex)
+			elif cor == spike:
+				var tileIndex = 6
 				newTileMap.set_cell(i,f,tileIndex)
 	newTileMap.set_owner(get_tree().get_edited_scene_root())
 
@@ -197,24 +204,33 @@ func ler_cores_da_imagem(img,x,y):
 	
 func gerar_andar(bigMap, tile):
 	var minimapa = criar_cena()
-	var primeiro = true
+	emit_signal("map",minimapa)
 	for y in range(0, len(minimapa)):
 		for x in range(0, len(minimapa[y])):
-			if minimapa[y][x] == "O":
-
+			if minimapa[y][x] == "S":
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				if primeiro:
-					gerar_tilemap(pos,tile,'spawn.png')
-					primeiro = false
-				else:
-					gerar_tilemap(pos,tile, false)
-			
+				print("do nó ", pos)
+				var posMeio = Coletar_posicao_do_tile(x+0.5,y+0.5,bigMap.cell_size,bigMap.transform.get_scale())
+				emit_signal("spawn", posMeio)
+				gerar_tilemap(pos,tile,'spawn.png')
+
+			elif minimapa[y][x] == "E":
+				rng.randomize()
+				var sala = rng.randi_range(0,4)
+				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
+				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png')
+			elif minimapa[y][x] == "K":
+				var chave = true
+				rng.randomize()
+				var sala = rng.randi_range(0,4)
+				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
+				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png')
+			elif minimapa[y][x] == "O":
+				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
+				gerar_tilemap(pos,tile,'exit.png')
+
 func _ready():
 	var tilemap = get_node('BigMap')
 	var tile = $TileMap
-
 	gerar_andar(tilemap, tile)
-	print(ler_cores_da_imagem("spawn.png",0,0))
-	if ler_cores_da_imagem('spawn.png',0,0) == Color("#914400")*255:
-		print("dá certo")
 

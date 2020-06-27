@@ -19,3 +19,15 @@ func get_input():
 func _physics_process(delta):
 	get_input()
 	velocity = move_and_slide(velocity)
+
+
+func _on_Node2D_spawn(pos):
+	print("do player ",pos)
+	$".".position = pos
+	pass # Replace with function body.
+
+
+func _on_Node2D_map(mapa):
+	for y in range(0, len(mapa)):
+		$Label.text += str(mapa[y]) + "\n"
+
