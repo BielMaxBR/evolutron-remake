@@ -13,9 +13,6 @@ var velocity = Vector2()
 func get_input():
 	velocity = Vector2()
 	if Input.is_action_pressed('right'):
-
-		#emit_signal("direita")
-
 		velocity.x += 1
 	if Input.is_action_pressed('left'):
 		velocity.x -= 1
@@ -23,9 +20,11 @@ func get_input():
 		velocity.y += 1
 	if Input.is_action_pressed('up'):
 		velocity.y -= 1
-	
-	velocity = velocity.normalized() * speed
 
+	velocity = velocity.normalized() * speed
+func _input(event):
+	if event.is_action_pressed("attack"):
+		$attack.playing = true
 func get_camera():
 	#print(cam)
 	var node = get_node(cam)
@@ -47,14 +46,16 @@ func _physics_process(delta):
 	get_input()
 	get_camera()
 	velocity = move_and_slide(velocity)
-	$AnimatedSprite.look_at(get_global_mouse_position())
-
+	$attack.look_at(get_global_mouse_position())
+	$Sprite.look_at(get_global_mouse_position())
 func _ready():
 	pass
 func _on_Node2D_spawn(pos):
 	print("do player ",pos)
 	$".".position = pos
 	pass # Replace with function body.
+
+
 
 
 
