@@ -155,10 +155,12 @@ func Coletar_posicao_do_tile(x, y, tile, scale):
 	return Vector2(rex,rey)
 	pass
 
-func gerar_tilemap(pos, tile, imagem, portas):
+func gerar_tilemap(pos, tile, imagem, portas, index):
 	var newTileMap = TileMap.new()
 
 	$".".add_child(newTileMap)
+	newTileMap.name = "Room" + str(index)
+	newTileMap.add_to_group("Rooms")
 	newTileMap.position = pos
 	newTileMap.scale = tile.transform.get_scale()
 	newTileMap.cell_size = tile.cell_size
@@ -255,6 +257,7 @@ func se_tem_sala(mapa, sala_atual):
 	return [cima,direita,baixo,esquerda]
 	
 func gerar_andar(bigMap, tile):
+	var index = 0
 	var minimapa = criar_cena()
 	emit_signal("map",minimapa)
 	for y in range(0, len(minimapa)):
@@ -265,25 +268,31 @@ func gerar_andar(bigMap, tile):
 				print("do nó ", pos)
 				var posMeio = Coletar_posicao_do_tile(x+0.5,y+0.5,bigMap.cell_size,bigMap.transform.get_scale())
 				emit_signal("spawn", posMeio)
-				gerar_tilemap(pos,tile,'spawn.png', portas)
-
+				gerar_tilemap(pos,tile,'spawn.png', portas, index)
+				index += 1
 			elif minimapa[y][x] == "E":
 				rng.randomize()
 				var sala = rng.randi_range(0,4)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png', portas)
+				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png', portas, index)
+				index += 1
 			elif minimapa[y][x] == "K":
 				var chave = true
 				rng.randomize()
 				var sala = rng.randi_range(0,4)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png',portas)
+				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png',portas, index)
+				index += 1
 			elif minimapa[y][x] == "O":
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				gerar_tilemap(pos,tile,'exit.png',portas)
+				gerar_tilemap(pos,tile,'exit.png',portas, index)
+				index += 1
 
 func _ready():
 	var tilemap = get_node('BigMap')
 	var tile = $TileMap
 	gerar_andar(tilemap, tile)
+	for i in range(0, get_child_count()):
+		if "Room" in get_child(i).name:
+			print(get_child(i).name)
 

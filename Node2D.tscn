@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Scripts/Map_generator.gd" type="Script" id=1]
 [ext_resource path="res://tileset.tres" type="TileSet" id=2]
-[ext_resource path="res://KinematicBody2D.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/KinematicBody2D.gd" type="Script" id=3]
 [ext_resource path="res://icon.png" type="Texture" id=4]
 [ext_resource path="res://Scripts/Camera2D.gd" type="Script" id=5]
 [ext_resource path="res://anim/attack2.png" type="Texture" id=6]
@@ -10,21 +10,14 @@
 [ext_resource path="res://anim/attack4.png" type="Texture" id=8]
 [ext_resource path="res://anim/attack0.png" type="Texture" id=9]
 [ext_resource path="res://anim/attack3.png" type="Texture" id=10]
+[ext_resource path="res://anim/attack1.png" type="Texture" id=11]
 
-[sub_resource type="SpriteFrames" id=1]
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 13.4879, 13.5601 )
+
+[sub_resource type="SpriteFrames" id=2]
 animations = [ {
-"frames": [ ExtResource( 4 ) ],
-"loop": true,
-"name": "default",
-"speed": 5.0
-} ]
-
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 16.6398, 15.8251 )
-
-[sub_resource type="SpriteFrames" id=3]
-animations = [ {
-"frames": [ ExtResource( 9 ), ExtResource( 6 ), ExtResource( 10 ), ExtResource( 8 ), null ],
+"frames": [ ExtResource( 9 ), ExtResource( 11 ), ExtResource( 6 ), ExtResource( 10 ), ExtResource( 8 ), null, ExtResource( 9 ) ],
 "loop": false,
 "name": "default",
 "speed": 15.0
@@ -68,38 +61,31 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Player" type="KinematicBody2D" parent="."]
-position = Vector2( 398.221, 298.902 )
+[node name="KinematicBody2D" type="KinematicBody2D" parent="."]
 script = ExtResource( 3 )
 cam = NodePath("../Camera2D")
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="Player"]
-scale = Vector2( 0.551993, 0.554346 )
-frames = SubResource( 1 )
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KinematicBody2D"]
+shape = SubResource( 1 )
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-shape = SubResource( 2 )
-
-[node name="Sprite" type="Sprite" parent="Player"]
-visible = false
-scale = Vector2( 0.375686, 0.463303 )
+[node name="Sprite" type="Sprite" parent="KinematicBody2D"]
+position = Vector2( -0.0834296, -0.0834274 )
+scale = Vector2( 0.461208, 0.44559 )
 texture = ExtResource( 4 )
-offset = Vector2( 80, 0 )
 
-[node name="attack" type="AnimatedSprite" parent="Player"]
-position = Vector2( -0.0548401, 0.0756836 )
-scale = Vector2( 2, 2 )
-frames = SubResource( 3 )
-speed_scale = 1.5
-offset = Vector2( 12, 0 )
+[node name="attack" type="AnimatedSprite" parent="KinematicBody2D"]
+scale = Vector2( 1.12, 2 )
+frames = SubResource( 2 )
+speed_scale = 1.2
+offset = Vector2( 20, 0 )
 
-[node name="Sound" type="AudioStreamPlayer" parent="Player/attack"]
+[node name="Sound" type="AudioStreamPlayer" parent="KinematicBody2D/attack"]
 stream = ExtResource( 7 )
 [connection signal="map" from="." to="Camera2D" method="_on_Node2D_map"]
-[connection signal="spawn" from="." to="Player" method="_on_Node2D_spawn"]
-[connection signal="apareci" from="Player" to="Camera2D" method="_on_KinematicBody2D_apareci"]
-[connection signal="baixo" from="Player" to="Camera2D" method="_on_KinematicBody2D_baixo"]
-[connection signal="cima" from="Player" to="Camera2D" method="_on_KinematicBody2D_cima"]
-[connection signal="direita" from="Player" to="Camera2D" method="_on_KinematicBody2D_direita"]
-[connection signal="esquerda" from="Player" to="Camera2D" method="_on_KinematicBody2D_esquerda"]
-[connection signal="finished" from="Player/attack/Sound" to="Player" method="_on_Sound_finished"]
+[connection signal="spawn" from="." to="KinematicBody2D" method="_on_Node2D_spawn"]
+[connection signal="apareci" from="KinematicBody2D" to="Camera2D" method="_on_KinematicBody2D_apareci"]
+[connection signal="baixo" from="KinematicBody2D" to="Camera2D" method="_on_KinematicBody2D_baixo"]
+[connection signal="cima" from="KinematicBody2D" to="Camera2D" method="_on_KinematicBody2D_cima"]
+[connection signal="direita" from="KinematicBody2D" to="Camera2D" method="_on_KinematicBody2D_direita"]
+[connection signal="esquerda" from="KinematicBody2D" to="Camera2D" method="_on_KinematicBody2D_esquerda"]
+[connection signal="animation_finished" from="KinematicBody2D/attack" to="KinematicBody2D" method="_on_attack_animation_finished"]

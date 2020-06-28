@@ -24,7 +24,7 @@ func get_input():
 	velocity = velocity.normalized() * speed
 func _input(event):
 	if event.is_action_pressed("attack"):
-		$attack.playing = true
+		$attack.play()
 func get_camera():
 	#print(cam)
 	var node = get_node(cam)
@@ -39,7 +39,7 @@ func get_camera():
 		emit_signal("cima")
 
 
-func _physics_process(delta):
+func _process(delta):
 	if sim:
 		emit_signal("apareci",$".".position)
 		sim = false
@@ -59,3 +59,8 @@ func _on_Node2D_spawn(pos):
 
 
 
+
+
+func _on_attack_animation_finished():
+	$attack.playing = false
+	pass # Replace with function body.
