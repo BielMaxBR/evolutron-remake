@@ -19,6 +19,7 @@ extents = Vector2( 16.6398, 15.8251 )
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 1 )
+numero_de_salas = 10
 
 [node name="BigMap" type="TileMap" parent="."]
 tile_set = ExtResource( 2 )
@@ -28,6 +29,7 @@ format = 1
 tile_data = PoolIntArray( 5, 0, 0, 327685, 0, 0 )
 
 [node name="TileMap" type="TileMap" parent="."]
+visible = false
 scale = Vector2( 2, 2 )
 z_index = -1
 tile_set = ExtResource( 2 )

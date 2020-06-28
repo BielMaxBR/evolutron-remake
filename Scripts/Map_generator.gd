@@ -155,7 +155,7 @@ func Coletar_posicao_do_tile(x, y, tile, scale):
 	return Vector2(rex,rey)
 	pass
 
-func gerar_tilemap(pos, tile, imagem):
+func gerar_tilemap(pos, tile, imagem, portas):
 	var newTileMap = TileMap.new()
 
 	$".".add_child(newTileMap)
@@ -166,24 +166,55 @@ func gerar_tilemap(pos, tile, imagem):
 	newTileMap.z_index = -1
 
 	
-	for i in range(0,25):
-		for f in range(0,19):
-			var cor = ler_cores_da_imagem(imagem,i,f)
+	for x in range(0,25):
+		for y in range(0,19):
+			var cor = ler_cores_da_imagem(imagem,x,y)
 			if cor == chao:
 				var tileIndex = 1
-				newTileMap.set_cell(i,f,tileIndex)
+				newTileMap.set_cell(x,y,tileIndex)
 			elif cor == parede:
 				var tileIndex = 0
-				newTileMap.set_cell(i,f,tileIndex)
+				newTileMap.set_cell(x,y,tileIndex)
 			elif cor == porta:
-				var tileIndex = 4
-				newTileMap.set_cell(i,f,tileIndex)
+				if y == 0: 
+					if x == 11 or x == 12 or x == 13:
+						if portas[0]:
+							var tileIndex = 4
+							newTileMap.set_cell(x,y,tileIndex)
+						else:
+							var tileIndex = 0
+							newTileMap.set_cell(x,y,tileIndex)
+				elif x == 24: 
+					if y == 8 or y == 9 or y == 10:
+						if portas[1]:
+							var tileIndex = 4
+							newTileMap.set_cell(x,y,tileIndex)
+						else:
+							var tileIndex = 0
+							newTileMap.set_cell(x,y,tileIndex)
+				elif y == 18: 
+					if x == 11 or x == 12 or x == 13:
+						if portas[2]:
+							var tileIndex = 4
+							newTileMap.set_cell(x,y,tileIndex)
+						else:
+							var tileIndex = 0
+							newTileMap.set_cell(x,y,tileIndex)
+				elif x == 0: 
+					if y == 8 or y == 9 or y == 10:
+						if portas[3]:
+							var tileIndex = 4
+							newTileMap.set_cell(x,y,tileIndex)
+						else:
+							var tileIndex = 0
+							newTileMap.set_cell(x,y,tileIndex)
+
 			elif cor == muro:
 				var tileIndex = 2
-				newTileMap.set_cell(i,f,tileIndex)
+				newTileMap.set_cell(x,y,tileIndex)
 			elif cor == spike:
 				var tileIndex = 6
-				newTileMap.set_cell(i,f,tileIndex)
+				newTileMap.set_cell(x,y,tileIndex)
 	newTileMap.set_owner(get_tree().get_edited_scene_root())
 
 func gerar_dados_da_imagem(imagem):
@@ -201,33 +232,55 @@ func ler_cores_da_imagem(img,x,y):
 	data.lock()
 	var color = data.get_pixel(x,y)
 	return color*255
+
+func se_tem_sala(mapa, sala_atual):
+	var cima = false
+	var direita = false
+	var baixo = false
+	var esquerda = false
+	
+	if sala_atual.y-1 >= 0 and  mapa[sala_atual.y-1][sala_atual.x] != ".":
+		cima = true
+	
+	if sala_atual.x+1 <= 5 and mapa[sala_atual.y][sala_atual.x+1] != ".":
+		direita = true
+	
+	if sala_atual.y+1 <= 5 and mapa[sala_atual.y+1][sala_atual.x] != ".":
+		baixo = true
+	
+	if sala_atual.x-1 >= 0 and mapa[sala_atual.y][sala_atual.x-1] != ".":
+		esquerda = true
+		
+		
+	return [cima,direita,baixo,esquerda]
 	
 func gerar_andar(bigMap, tile):
 	var minimapa = criar_cena()
 	emit_signal("map",minimapa)
 	for y in range(0, len(minimapa)):
 		for x in range(0, len(minimapa[y])):
+			var portas = se_tem_sala(minimapa, Vector2(x,y))
 			if minimapa[y][x] == "S":
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
 				print("do nó ", pos)
 				var posMeio = Coletar_posicao_do_tile(x+0.5,y+0.5,bigMap.cell_size,bigMap.transform.get_scale())
 				emit_signal("spawn", posMeio)
-				gerar_tilemap(pos,tile,'spawn.png')
+				gerar_tilemap(pos,tile,'spawn.png', portas)
 
 			elif minimapa[y][x] == "E":
 				rng.randomize()
 				var sala = rng.randi_range(0,4)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png')
+				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png', portas)
 			elif minimapa[y][x] == "K":
 				var chave = true
 				rng.randomize()
 				var sala = rng.randi_range(0,4)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png')
+				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png',portas)
 			elif minimapa[y][x] == "O":
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				gerar_tilemap(pos,tile,'exit.png')
+				gerar_tilemap(pos,tile,'exit.png',portas)
 
 func _ready():
 	var tilemap = get_node('BigMap')
