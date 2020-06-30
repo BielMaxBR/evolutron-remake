@@ -1,0 +1,66 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://BIXOS/Arainha/filhote_de_bixo4.png" type="Texture" id=1]
+[ext_resource path="res://BIXOS/Arainha/filhote_de_bixo.png" type="Texture" id=3]
+[ext_resource path="res://BIXOS/Arainha/filhote_de_bixo3.png" type="Texture" id=4]
+[ext_resource path="res://BIXOS/Arainha/filhote_de_bixo2.png" type="Texture" id=5]
+[ext_resource path="res://inimigos/scripts/arainha.gd" type="Script" id=6]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 17.3696, 11.2735 )
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "parado",
+"speed": 1.0
+}, {
+"frames": [ ExtResource( 5 ), ExtResource( 4 ), ExtResource( 1 ) ],
+"loop": true,
+"name": "andando",
+"speed": 10.0
+} ]
+
+[node name="arainha" type="KinematicBody2D"]
+script = ExtResource( 6 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+scale = Vector2( 2, 2 )
+frames = SubResource( 2 )
+animation = "parado"
+playing = true
+
+[node name="RayCast2D_1" type="RayCast2D" parent="."]
+enabled = true
+
+[node name="RayCast2D_2" type="RayCast2D" parent="."]
+rotation = 0.808435
+enabled = true
+
+[node name="RayCast2D_3" type="RayCast2D" parent="."]
+rotation = -0.791549
+enabled = true
+
+[node name="RayCast2D_4" type="RayCast2D" parent="."]
+rotation = -1.5673
+enabled = true
+
+[node name="RayCast2D_5" type="RayCast2D" parent="."]
+rotation = 1.56997
+enabled = true
+
+[node name="RayCast2D_6" type="RayCast2D" parent="."]
+rotation = 3.90149
+enabled = true
+
+[node name="RayCast2D_7" type="RayCast2D" parent="."]
+rotation = 2.36389
+enabled = true
+
+[node name="RayCast2D_8" type="RayCast2D" parent="."]
+rotation = 3.13937
+enabled = true

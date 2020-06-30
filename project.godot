@@ -53,6 +53,10 @@ attack={
  ]
 }
 
+[node]
+
+name_num_separator=2
+
 [rendering]
 
 quality/driver/driver_name="GLES2"

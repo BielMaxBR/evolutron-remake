@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://Scripts/Map_generator.gd" type="Script" id=1]
 [ext_resource path="res://tileset.tres" type="TileSet" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://anim/attack0.png" type="Texture" id=9]
 [ext_resource path="res://anim/attack3.png" type="Texture" id=10]
 [ext_resource path="res://anim/attack1.png" type="Texture" id=11]
+[ext_resource path="res://inimigos/arainha.tscn" type="PackedScene" id=12]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 13.4879, 13.5601 )
@@ -18,9 +19,9 @@ extents = Vector2( 13.4879, 13.5601 )
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
 "frames": [ ExtResource( 9 ), ExtResource( 11 ), ExtResource( 6 ), ExtResource( 10 ), ExtResource( 8 ), null, ExtResource( 9 ) ],
-"loop": false,
+"loop": true,
 "name": "default",
-"speed": 15.0
+"speed": 20.0
 } ]
 
 [node name="Node2D" type="Node2D"]
@@ -31,7 +32,6 @@ tile_set = ExtResource( 2 )
 cell_size = Vector2( 800, 608 )
 cell_quadrant_size = 6
 format = 1
-tile_data = PoolIntArray( 5, 0, 0, 327685, 0, 0 )
 
 [node name="TileMap" type="TileMap" parent="."]
 visible = false
@@ -64,6 +64,7 @@ __meta__ = {
 [node name="KinematicBody2D" type="KinematicBody2D" parent="."]
 script = ExtResource( 3 )
 cam = NodePath("../Camera2D")
+aranha = NodePath("../arainha")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="KinematicBody2D"]
 shape = SubResource( 1 )
@@ -81,6 +82,8 @@ offset = Vector2( 20, 0 )
 
 [node name="Sound" type="AudioStreamPlayer" parent="KinematicBody2D/attack"]
 stream = ExtResource( 7 )
+
+[node name="arainha" parent="." instance=ExtResource( 12 )]
 [connection signal="map" from="." to="Camera2D" method="_on_Node2D_map"]
 [connection signal="spawn" from="." to="KinematicBody2D" method="_on_Node2D_spawn"]
 [connection signal="apareci" from="KinematicBody2D" to="Camera2D" method="_on_KinematicBody2D_apareci"]

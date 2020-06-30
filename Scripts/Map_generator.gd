@@ -272,14 +272,14 @@ func gerar_andar(bigMap, tile):
 				index += 1
 			elif minimapa[y][x] == "E":
 				rng.randomize()
-				var sala = rng.randi_range(0,4)
+				var sala = rng.randi_range(0,5)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
 				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png', portas, index)
 				index += 1
 			elif minimapa[y][x] == "K":
 				var chave = true
 				rng.randomize()
-				var sala = rng.randi_range(0,4)
+				var sala = rng.randi_range(0,5)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
 				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png',portas, index)
 				index += 1

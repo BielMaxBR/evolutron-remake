@@ -2,7 +2,9 @@ extends KinematicBody2D
 var sim = true
 var nao = true
 export (int) var speed = 200
-export(NodePath) var cam
+export(NodePath) var cam 
+export(NodePath) var aranha
+onready var aranhaPath = preload("res://inimigos/arainha.tscn")
 signal esquerda
 signal direita
 signal cima
@@ -23,8 +25,13 @@ func get_input():
 
 	velocity = velocity.normalized() * speed
 func _input(event):
-	if event.is_action_pressed("attack"):
-		$attack.play()
+	if event.is_action_pressed("attack") and not $attack.playing:
+		var aranha = aranhaPath.instance()
+		aranha.position = position
+		get_tree().get_root().add_child(aranha)
+		aranha.connect("vivo", self, "_on_aranha_vivo")
+		$attack.playing = true
+		$attack/Sound.playing = true
 func get_camera():
 	#print(cam)
 	var node = get_node(cam)
@@ -48,19 +55,19 @@ func _process(delta):
 	velocity = move_and_slide(velocity)
 	$attack.look_at(get_global_mouse_position())
 	$Sprite.look_at(get_global_mouse_position())
+	
 func _ready():
 	pass
+	
 func _on_Node2D_spawn(pos):
 	print("do player ",pos)
 	$".".position = pos
+	
+	get_node(aranha).position = Vector2(pos.x,pos.y-100)
 	pass # Replace with function body.
-
-
-
-
-
 
 
 func _on_attack_animation_finished():
 	$attack.playing = false
+	$attack/Sound.playing = false
 	pass # Replace with function body.
