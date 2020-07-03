@@ -28,29 +28,30 @@ func _on_KinematicBody2D_apareci(pos):
 
 func _on_KinematicBody2D_baixo():
 	$".".position.y += 608
-	print("baixo")
+
 	pass # Replace with function body.
 
 
 func _on_KinematicBody2D_cima():
 	$".".position.y -= 608
-	print("cima")
+
 	pass # Replace with function body.
 
 
 func _on_KinematicBody2D_direita():
 	position.x += 800
-	print("direita")
+
 	pass # Replace with function body.
 
 
 func _on_KinematicBody2D_esquerda():
 	$".".position.x -= 800
-	print("esquerda")
+
 	pass # Replace with function body.
 
 
 func _on_Node2D_map(mapa):
+	$Label.text = ""
 	for y in range(0, len(mapa)):
 		$Label.text += str(mapa[y]) + "\n"
 	pass # Replace with function body.

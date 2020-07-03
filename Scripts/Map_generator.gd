@@ -1,6 +1,6 @@
 extends Node2D
 
-export(int, 0, 100) var numero_de_salas = 6
+export(int, 0, 100) var numero_de_salas = 8
 export(Vector2) var area = Vector2(6,6)
 var parede = Color("#914400")*255
 var chao = Color("#48ff00")*255
@@ -8,10 +8,10 @@ var porta = Color("#ffee00")*255
 var muro = Color("#006d0f")*255
 var spike = Color("#000000")*255
 var rng = RandomNumberGenerator.new()
-
+var andar = 0
 signal spawn(pos)
 signal map(mapa)
-
+signal saida(pos)
 func gerar_mapa_aberto():
 	return '0'
 
@@ -24,7 +24,6 @@ func gerar_salas():
 			var x_atual = int(rng.randi_range(0, 5))
 			rng.randomize()
 			var y_atual = int(rng.randi_range(0, 5))
-			print("sala gerada ", x_atual, " ", y_atual, "\n")
 			salas.append([x_atual,y_atual])
 		else:
 			var nova_sala = nova_sala(salas,area)
@@ -111,14 +110,13 @@ func nova_sala(salas, area):
 		return nova_sala(salas, area)
 
 func criar_salas(salas ,mapa):
-	print(salas)
 	for sala in salas:
 		var salaX = int(sala[0])
 		var salaY = int(sala[1])
 		if mapa[salaY][salaX] == ".":
 			if salas.find(sala) == 0:
 				mapa[salaY][salaX] = "S"
-			elif salas.find(sala) == 4:
+			elif salas.find(sala) == len(salas)-2:
 				mapa[salaY][salaX] = "K"
 			elif salas.find(sala) == len(salas)-1:
 				mapa[salaY][salaX] = "O"
@@ -136,15 +134,9 @@ func criar_cena():
 		[".",".",".",".",".","."],
 		[".",".",".",".",".","."],
 	]
-	
-	var mapa_vazio = gerar_mapa_aberto()
-	#mapa_aberto[2][3] = "1"
-	
 	var salas = gerar_salas()
 	
 	mapa = criar_salas(salas, mapa)
-	
-	
 	for i in mapa:
 		print(i)
 	return mapa
@@ -162,6 +154,7 @@ func gerar_tilemap(pos, tile, imagem, portas, index):
 	newTileMap.name = "Room" + str(index)
 	newTileMap.add_to_group("Rooms")
 	newTileMap.position = pos
+
 	newTileMap.scale = tile.transform.get_scale()
 	newTileMap.cell_size = tile.cell_size
 	newTileMap.tile_set = tile.tile_set
@@ -228,7 +221,6 @@ func gerar_dados_da_imagem(imagem):
 	
 	return image
 
-	
 func ler_cores_da_imagem(img,x,y):
 	var data = gerar_dados_da_imagem(img)
 	data.lock()
@@ -257,42 +249,63 @@ func se_tem_sala(mapa, sala_atual):
 	return [cima,direita,baixo,esquerda]
 	
 func gerar_andar(bigMap, tile):
+	
 	var index = 0
 	var minimapa = criar_cena()
+	
 	emit_signal("map",minimapa)
 	for y in range(0, len(minimapa)):
+		
 		for x in range(0, len(minimapa[y])):
+			
 			var portas = se_tem_sala(minimapa, Vector2(x,y))
+			
 			if minimapa[y][x] == "S":
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				print("do nó ", pos)
 				var posMeio = Coletar_posicao_do_tile(x+0.5,y+0.5,bigMap.cell_size,bigMap.transform.get_scale())
 				emit_signal("spawn", posMeio)
 				gerar_tilemap(pos,tile,'spawn.png', portas, index)
 				index += 1
+				
 			elif minimapa[y][x] == "E":
+				
 				rng.randomize()
 				var sala = rng.randi_range(0,5)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
 				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png', portas, index)
 				index += 1
+				
 			elif minimapa[y][x] == "K":
+				
 				var chave = true
 				rng.randomize()
 				var sala = rng.randi_range(0,5)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
 				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png',portas, index)
 				index += 1
+				
 			elif minimapa[y][x] == "O":
+				
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
+				var posMeio = Coletar_posicao_do_tile(x+0.5,y+0.5,bigMap.cell_size,bigMap.transform.get_scale())
+				print("quando cria: ", posMeio)
+				emit_signal("saida", posMeio)
 				gerar_tilemap(pos,tile,'exit.png',portas, index)
 				index += 1
 
 func _ready():
+	rng.randomize()
 	var tilemap = get_node('BigMap')
 	var tile = $TileMap
 	gerar_andar(tilemap, tile)
-	for i in range(0, get_child_count()):
-		if "Room" in get_child(i).name:
-			print(get_child(i).name)
+
+func _on_portal_desceu():
+	
+	for i in range(0, get_child_count()-1):
+		if get_child(i):
+			if get_child(i).is_in_group("Rooms"):
+				get_child(i).free()
+		
+	_ready()
+	andar += 1
 

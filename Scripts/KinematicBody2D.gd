@@ -32,6 +32,8 @@ func _input(event):
 		aranha.connect("vivo", self, "_on_aranha_vivo")
 		$attack.playing = true
 		$attack/Sound.playing = true
+	if event.is_action_pressed("test"):
+		print(position)
 func get_camera():
 	#print(cam)
 	var node = get_node(cam)
@@ -60,7 +62,7 @@ func _ready():
 	pass
 	
 func _on_Node2D_spawn(pos):
-	print("do player ",pos)
+
 	$".".position = pos
 	
 	get_node(aranha).position = Vector2(pos.x,pos.y-100)
@@ -70,4 +72,9 @@ func _on_Node2D_spawn(pos):
 func _on_attack_animation_finished():
 	$attack.playing = false
 	$attack/Sound.playing = false
+	pass # Replace with function body.
+
+
+func _on_portal_pos(pos):
+	$ponta.look_at(pos)
 	pass # Replace with function body.

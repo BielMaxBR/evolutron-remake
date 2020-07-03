@@ -17,7 +17,7 @@ func _process(delta):
 		if get_node(ray):
 			if get_node(ray).is_colliding():
 				$AnimatedSprite.animation = "andando"
-				move_and_slide(Vector2(0,100))
+				move_and_slide(Vector2(0,150))
 			else:
 				$AnimatedSprite.animation = 'parado'
 # Called every frame. 'delta' is the elapsed time since the previous frame.
