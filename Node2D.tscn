@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Scripts/Map_generator.gd" type="Script" id=1]
 [ext_resource path="res://tileset.tres" type="TileSet" id=2]
@@ -14,11 +14,15 @@
 [ext_resource path="res://inimigos/arainha.tscn" type="PackedScene" id=12]
 [ext_resource path="res://Scripts/portal.gd" type="Script" id=13]
 [ext_resource path="res://spritesheet.png" type="Texture" id=14]
+[ext_resource path="res://Scripts/Room.gd" type="Script" id=15]
 
 [sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 800, 608 )
+
+[sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 13.4879, 13.5601 )
 
-[sub_resource type="SpriteFrames" id=2]
+[sub_resource type="SpriteFrames" id=3]
 animations = [ {
 "frames": [ ExtResource( 9 ), ExtResource( 11 ), ExtResource( 6 ), ExtResource( 10 ), ExtResource( 8 ), null, ExtResource( 9 ) ],
 "loop": true,
@@ -26,11 +30,13 @@ animations = [ {
 "speed": 20.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 28.6335, 24.2614 )
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 27.7006, 27.46 )
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 1 )
+shape2d = SubResource( 1 )
+RoomScript = ExtResource( 15 )
 
 [node name="BigMap" type="TileMap" parent="."]
 tile_set = ExtResource( 2 )
@@ -67,6 +73,15 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="andar" type="Label" parent="Camera2D"]
+margin_left = 231.232
+margin_top = -136.922
+margin_right = 281.232
+margin_bottom = -122.922
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Player" type="KinematicBody2D" parent="."]
 collision_layer = 3075
 collision_mask = 15
@@ -75,7 +90,7 @@ cam = NodePath("../Camera2D")
 aranha = NodePath("../arainha")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="Player"]
 position = Vector2( -0.0834296, -0.0834274 )
@@ -84,7 +99,7 @@ texture = ExtResource( 4 )
 
 [node name="attack" type="AnimatedSprite" parent="Player"]
 scale = Vector2( 1.12, 2 )
-frames = SubResource( 2 )
+frames = SubResource( 3 )
 speed_scale = 1.2
 offset = Vector2( 20, 0 )
 
@@ -107,12 +122,13 @@ collision_mask = 15
 script = ExtResource( 13 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="portal"]
-shape = SubResource( 3 )
+shape = SubResource( 4 )
 
 [node name="Sprite" type="Sprite" parent="portal"]
 texture = ExtResource( 4 )
-[connection signal="map" from="." to="Camera2D" method="_on_Node2D_map"]
+[connection signal="desci" from="." to="Camera2D" method="_on_Node2D_desci"]
 [connection signal="map" from="." to="portal" method="_on_Node2D_map"]
+[connection signal="map" from="." to="Camera2D" method="_on_Node2D_map"]
 [connection signal="saida" from="." to="portal" method="_on_Node2D_saida"]
 [connection signal="spawn" from="." to="Player" method="_on_Node2D_spawn"]
 [connection signal="apareci" from="Player" to="Camera2D" method="_on_KinematicBody2D_apareci"]

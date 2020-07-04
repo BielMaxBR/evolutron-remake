@@ -1,5 +1,6 @@
 extends Node2D
-
+export(Shape2D) var shape2d 
+export(Script) var RoomScript
 export(int, 0, 100) var numero_de_salas = 8
 export(Vector2) var area = Vector2(6,6)
 var parede = Color("#914400")*255
@@ -12,6 +13,7 @@ var andar = 0
 signal spawn(pos)
 signal map(mapa)
 signal saida(pos)
+signal desci(andar)
 func gerar_mapa_aberto():
 	return '0'
 
@@ -142,19 +144,33 @@ func criar_cena():
 	return mapa
 
 func Coletar_posicao_do_tile(x, y, tile, scale):
+	
+	
 	var rex = (tile.x*x)*scale.x
 	var rey = (tile.y*y)*scale.y
 	return Vector2(rex,rey)
 	pass
-
+	
+func criar_sala_collider(pos):
+	var collider = Area2D.new()
+	var shape = CollisionShape2D.new()
+	shape.call_deferred("set", "shape", shape)
+	collider.name = "Collisor"
+	collider.add_child(shape)
+	return collider
+	pass
+	
 func gerar_tilemap(pos, tile, imagem, portas, index):
 	var newTileMap = TileMap.new()
-
+	var SalaCollider = criar_sala_collider(pos)
 	$".".add_child(newTileMap)
+	newTileMap.add_child(SalaCollider)
+	print(newTileMap.get_child(0).name)
+	newTileMap.set_script(RoomScript.new())
+	#print(RoomScript)
 	newTileMap.name = "Room" + str(index)
 	newTileMap.add_to_group("Rooms")
 	newTileMap.position = pos
-
 	newTileMap.scale = tile.transform.get_scale()
 	newTileMap.cell_size = tile.cell_size
 	newTileMap.tile_set = tile.tile_set
@@ -298,14 +314,12 @@ func _ready():
 	var tilemap = get_node('BigMap')
 	var tile = $TileMap
 	gerar_andar(tilemap, tile)
-
+	emit_signal("desci", andar)
 func _on_portal_desceu():
 	
-	for i in range(0, get_child_count()-1):
-		if get_child(i):
-			if get_child(i).is_in_group("Rooms"):
-				get_child(i).free()
-		
-	_ready()
+	var rooms = get_tree().get_nodes_in_group("Rooms")
+	for room in rooms:
+		room.free()
 	andar += 1
+	_ready()
 

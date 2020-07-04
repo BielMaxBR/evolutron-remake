@@ -55,3 +55,8 @@ func _on_Node2D_map(mapa):
 	for y in range(0, len(mapa)):
 		$Label.text += str(mapa[y]) + "\n"
 	pass # Replace with function body.
+
+
+func _on_Node2D_desci(andar):
+	$andar.text = str(andar)
+	pass # Replace with function body.
