@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://Scripts/Map_generator.gd" type="Script" id=1]
 [ext_resource path="res://tileset.tres" type="TileSet" id=2]
@@ -15,14 +15,18 @@
 [ext_resource path="res://Scripts/portal.gd" type="Script" id=13]
 [ext_resource path="res://spritesheet.png" type="Texture" id=14]
 [ext_resource path="res://Scripts/Room.gd" type="Script" id=15]
+[ext_resource path="res://arma.tscn" type="PackedScene" id=17]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 800, 608 )
+extents = Vector2( 183.5, 135.5 )
 
 [sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 183.5, 135.5 )
+
+[sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 13.4879, 13.5601 )
 
-[sub_resource type="SpriteFrames" id=3]
+[sub_resource type="SpriteFrames" id=4]
 animations = [ {
 "frames": [ ExtResource( 9 ), ExtResource( 11 ), ExtResource( 6 ), ExtResource( 10 ), ExtResource( 8 ), null, ExtResource( 9 ) ],
 "loop": true,
@@ -30,13 +34,15 @@ animations = [ {
 "speed": 20.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=4]
+[sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 27.7006, 27.46 )
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 1 )
 shape2d = SubResource( 1 )
 RoomScript = ExtResource( 15 )
+layers = 15
+numero_de_salas = 4
 
 [node name="BigMap" type="TileMap" parent="."]
 tile_set = ExtResource( 2 )
@@ -54,6 +60,18 @@ cell_quadrant_size = 26
 compatibility_mode = true
 format = 1
 tile_data = PoolIntArray( -524259, 3, 0, 0, 5, 0, 1, 5, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 0, 0, 6, 0, 0, 7, 0, 0, 8, 0, 0, 9, 0, 0, 10, 0, 0, 11, 1, 0, 12, 1, 0, 13, 1, 0, 14, 0, 0, 15, 0, 0, 16, 0, 0, 17, 0, 0, 18, 0, 0, 19, 0, 0, 20, 0, 0, 21, 0, 0, 22, 0, 0, 23, 5, 0, 24, 5, 0, 65536, 5, 0, 65537, -1073741820, 0, 65546, 3, 0, 65547, 1, 0, 65548, 1, 0, 65549, 1, 0, 65550, 3, 0, 65559, 4, 0, 65560, 5, 0, 131072, -1073741824, 0, 131082, 3, 0, 131083, 1, 0, 131084, 1, 0, 131085, 1, 0, 131086, 3, 0, 131096, -1610612736, 0, 196608, -1073741824, 0, 196618, 3, 0, 196619, 1, 0, 196620, 1, 0, 196621, 1, 0, 196622, 3, 0, 196632, -1610612736, 0, 262144, -1073741824, 0, 262154, 3, 0, 262155, 1, 0, 262156, 1, 0, 262157, 1, 0, 262158, 3, 0, 262168, -1610612736, 0, 327680, -1073741824, 0, 327690, 3, 0, 327691, 1, 0, 327692, 1, 0, 327693, 1, 0, 327694, 3, 0, 327704, -1610612736, 0, 393216, -1073741824, 0, 393226, 3, 0, 393227, 1, 0, 393228, 1, 0, 393229, 1, 0, 393230, 3, 0, 393240, -1610612736, 0, 458752, -1073741824, 0, 458753, 3, 0, 458754, 3, 0, 458755, 3, 0, 458756, 3, 0, 458757, 3, 0, 458758, 3, 0, 458759, 3, 0, 458760, 3, 0, 458761, 3, 0, 458762, 3, 0, 458763, 1, 0, 458764, 1, 0, 458765, 1, 0, 458766, 3, 0, 458767, 3, 0, 458768, 3, 0, 458769, 3, 0, 458770, 3, 0, 458771, 3, 0, 458772, 3, 0, 458773, 3, 0, 458774, 3, 0, 458775, 3, 0, 458776, -1610612736, 0, 524288, 1, 0, 524289, 1, 0, 524290, 1, 0, 524291, 1, 0, 524292, 1, 0, 524293, 1, 0, 524294, 1, 0, 524295, 1, 0, 524296, 1, 0, 524297, 1, 0, 524298, 1, 0, 524299, 1, 0, 524300, 1, 0, 524301, 1, 0, 524302, 1, 0, 524303, 1, 0, 524304, 1, 0, 524305, 1, 0, 524306, 1, 0, 524307, 1, 0, 524308, 1, 0, 524309, 1, 0, 524310, 1, 0, 524311, 1, 0, 524312, 1, 0, 589824, 1, 0, 589825, 1, 0, 589826, 1, 0, 589827, 1, 0, 589828, 1, 0, 589829, 1, 0, 589830, 1, 0, 589831, 1, 0, 589832, 1, 0, 589833, 1, 0, 589834, 1, 0, 589835, 1, 0, 589836, 1, 0, 589837, 1, 0, 589838, 1, 0, 589839, 1, 0, 589840, 1, 0, 589841, 1, 0, 589842, 1, 0, 589843, 1, 0, 589844, 1, 0, 589845, 1, 0, 589846, 1, 0, 589847, 1, 0, 589848, 1, 0, 655360, 1, 0, 655361, 1, 0, 655362, 1, 0, 655363, 1, 0, 655364, 1, 0, 655365, 1, 0, 655366, 1, 0, 655367, 1, 0, 655368, 1, 0, 655369, 1, 0, 655370, 1, 0, 655371, 1, 0, 655372, 1, 0, 655373, 1, 0, 655374, 1, 0, 655375, 1, 0, 655376, 1, 0, 655377, 1, 0, 655378, 1, 0, 655379, 1, 0, 655380, 1, 0, 655381, 1, 0, 655382, 1, 0, 655383, 1, 0, 655384, 1, 0, 720896, -1073741824, 0, 720897, 3, 0, 720898, 3, 0, 720899, 3, 0, 720900, 3, 0, 720901, 3, 0, 720902, 3, 0, 720903, 3, 0, 720904, 3, 0, 720905, 3, 0, 720906, 3, 0, 720907, 1, 0, 720908, 1, 0, 720909, 1, 0, 720910, 3, 0, 720911, 3, 0, 720912, 3, 0, 720913, 3, 0, 720914, 3, 0, 720915, 3, 0, 720916, 3, 0, 720917, 3, 0, 720918, 3, 0, 720919, 3, 0, 720920, -1610612736, 0, 786432, -1073741824, 0, 786442, 3, 0, 786443, 1, 0, 786444, 1, 0, 786445, 1, 0, 786446, 3, 0, 786456, -1610612736, 0, 851968, -1073741824, 0, 851978, 3, 0, 851979, 1, 0, 851980, 1, 0, 851981, 1, 0, 851982, 3, 0, 851992, -1610612736, 0, 917504, -1073741824, 0, 917514, 3, 0, 917515, 1, 0, 917516, 1, 0, 917517, 1, 0, 917518, 3, 0, 917528, -1610612736, 0, 983040, -1073741824, 0, 983050, 3, 0, 983051, 1, 0, 983052, 1, 0, 983053, 1, 0, 983054, 3, 0, 983064, -1610612736, 0, 1048576, -1073741824, 0, 1048586, 3, 0, 1048587, 1, 0, 1048588, 1, 0, 1048589, 1, 0, 1048590, 3, 0, 1048600, -1610612736, 0, 1114112, -1073741824, 0, 1114113, 1610612740, 0, 1114123, 1, 0, 1114124, 1, 0, 1114125, 1, 0, 1114135, -1610612732, 0, 1114136, 5, 0, 1179648, -1073741824, 0, 1179649, 5, 0, 1179650, 1610612736, 0, 1179651, 1610612736, 0, 1179652, 1610612736, 0, 1179653, 1610612736, 0, 1179654, 1610612736, 0, 1179655, 1610612736, 0, 1179656, 1610612736, 0, 1179657, 1610612736, 0, 1179658, 1610612736, 0, 1179659, 1, 0, 1179660, 1, 0, 1179661, 1, 0, 1179662, 1610612736, 0, 1179663, 1610612736, 0, 1179664, 1610612736, 0, 1179665, 1610612736, 0, 1179666, 1610612736, 0, 1179667, 1610612736, 0, 1179668, 1610612736, 0, 1179669, 1610612736, 0, 1179670, 1610612736, 0, 1179671, 5, 0, 1179672, 5, 0 )
+
+[node name="Area2D" type="Area2D" parent="TileMap"]
+position = Vector2( 200, 152 )
+collision_layer = 15
+collision_mask = 15
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TileMap/Area2D"]
+visible = false
+modulate = Color( 0, 0.847059, 0.678431, 1 )
+self_modulate = Color( 0.152941, 0.988235, 0.0235294, 1 )
+position = Vector2( 0.0456543, 0.540009 )
+shape = SubResource( 2 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
 z_index = 1
@@ -90,7 +108,7 @@ cam = NodePath("../Camera2D")
 aranha = NodePath("../arainha")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-shape = SubResource( 2 )
+shape = SubResource( 3 )
 
 [node name="Sprite" type="Sprite" parent="Player"]
 position = Vector2( -0.0834296, -0.0834274 )
@@ -99,7 +117,7 @@ texture = ExtResource( 4 )
 
 [node name="attack" type="AnimatedSprite" parent="Player"]
 scale = Vector2( 1.12, 2 )
-frames = SubResource( 3 )
+frames = SubResource( 4 )
 speed_scale = 1.2
 offset = Vector2( 20, 0 )
 
@@ -112,6 +130,8 @@ scale = Vector2( 0.508399, 0.305512 )
 texture = ExtResource( 14 )
 offset = Vector2( 30, 0 )
 
+[node name="arma" parent="Player" instance=ExtResource( 17 )]
+
 [node name="arainha" parent="." instance=ExtResource( 12 )]
 position = Vector2( -311.479, -216.147 )
 
@@ -122,7 +142,8 @@ collision_mask = 15
 script = ExtResource( 13 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="portal"]
-shape = SubResource( 4 )
+visible = false
+shape = SubResource( 5 )
 
 [node name="Sprite" type="Sprite" parent="portal"]
 texture = ExtResource( 4 )
@@ -131,6 +152,7 @@ texture = ExtResource( 4 )
 [connection signal="map" from="." to="Camera2D" method="_on_Node2D_map"]
 [connection signal="saida" from="." to="portal" method="_on_Node2D_saida"]
 [connection signal="spawn" from="." to="Player" method="_on_Node2D_spawn"]
+[connection signal="action" from="Player" to="Player/arma" method="_on_Player_action"]
 [connection signal="apareci" from="Player" to="Camera2D" method="_on_KinematicBody2D_apareci"]
 [connection signal="baixo" from="Player" to="Camera2D" method="_on_KinematicBody2D_baixo"]
 [connection signal="cima" from="Player" to="Camera2D" method="_on_KinematicBody2D_cima"]

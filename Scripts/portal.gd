@@ -21,7 +21,7 @@ func _process(delta):
 	pass
 	
 func _on_Node2D_saida(pos):
-	print(pos)
+
 
 	position = pos
 

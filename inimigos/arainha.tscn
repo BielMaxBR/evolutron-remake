@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://BIXOS/Arainha/filhote_de_bixo4.png" type="Texture" id=1]
 [ext_resource path="res://BIXOS/Arainha/filhote_de_bixo.png" type="Texture" id=3]
@@ -21,6 +21,9 @@ animations = [ {
 "name": "andando",
 "speed": 10.0
 } ]
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 17.5213, 11.7503 )
 
 [node name="arainha" type="KinematicBody2D"]
 script = ExtResource( 6 )
@@ -64,3 +67,11 @@ enabled = true
 [node name="RayCast2D_8" type="RayCast2D" parent="."]
 rotation = 3.13937
 enabled = true
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+visible = false
+position = Vector2( -0.353561, 3.18198 )
+shape = SubResource( 3 )
+[connection signal="area_entered" from="Area2D" to="." method="_on_Area2D_area_entered"]

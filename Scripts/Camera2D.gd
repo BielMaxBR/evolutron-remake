@@ -22,7 +22,6 @@ func _ready():
 func _on_KinematicBody2D_apareci(pos):
 	$".".position.x = pos.x
 	$".".position.y = pos.y
-	print("da cam ", position)
 	pass # Replace with function body.
 
 

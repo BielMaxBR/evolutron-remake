@@ -1,19 +1,22 @@
 extends Node2D
 export(Shape2D) var shape2d 
 export(Script) var RoomScript
+export(int, LAYERS_2D_PHYSICS) var layers
 export(int, 0, 100) var numero_de_salas = 8
 export(Vector2) var area = Vector2(6,6)
-var parede = Color("#914400")*255
-var chao = Color("#48ff00")*255
-var porta = Color("#ffee00")*255
-var muro = Color("#006d0f")*255
-var spike = Color("#000000")*255
+const parede = Color("#914400")*255
+const chao = Color("#48ff00")*255
+const porta = Color("#ffee00")*255
+const muro = Color("#006d0f")*255
+const spike = Color("#000000")*255
 var rng = RandomNumberGenerator.new()
 var andar = 0
+var fechada: bool
 signal spawn(pos)
 signal map(mapa)
 signal saida(pos)
 signal desci(andar)
+signal Open
 func gerar_mapa_aberto():
 	return '0'
 
@@ -144,8 +147,6 @@ func criar_cena():
 	return mapa
 
 func Coletar_posicao_do_tile(x, y, tile, scale):
-	
-	
 	var rex = (tile.x*x)*scale.x
 	var rey = (tile.y*y)*scale.y
 	return Vector2(rex,rey)
@@ -154,19 +155,24 @@ func Coletar_posicao_do_tile(x, y, tile, scale):
 func criar_sala_collider(pos):
 	var collider = Area2D.new()
 	var shape = CollisionShape2D.new()
-	shape.call_deferred("set", "shape", shape)
+	shape.call_deferred("set", "shape", shape2d)
 	collider.name = "Collisor"
 	collider.add_child(shape)
+	collider.z_index = 0
+	collider.monitoring = true
+	collider.monitorable = true
+	collider.input_pickable = true
+	collider.collision_layer = layers
 	return collider
 	pass
 	
-func gerar_tilemap(pos, tile, imagem, portas, index):
+func gerar_tilemap(pos, tile, imagem, portas, index, type):
 	var newTileMap = TileMap.new()
 	var SalaCollider = criar_sala_collider(pos)
-	$".".add_child(newTileMap)
+	SalaCollider.position = Vector2(200, 152)
 	newTileMap.add_child(SalaCollider)
-	print(newTileMap.get_child(0).name)
-	newTileMap.set_script(RoomScript.new())
+	newTileMap.call_deferred("set", "script", RoomScript)
+	newTileMap.set_script(RoomScript)
 	#print(RoomScript)
 	newTileMap.name = "Room" + str(index)
 	newTileMap.add_to_group("Rooms")
@@ -175,6 +181,7 @@ func gerar_tilemap(pos, tile, imagem, portas, index):
 	newTileMap.cell_size = tile.cell_size
 	newTileMap.tile_set = tile.tile_set
 	newTileMap.z_index = -1
+	newTileMap.tipo = type
 
 	
 	for x in range(0,25):
@@ -226,7 +233,12 @@ func gerar_tilemap(pos, tile, imagem, portas, index):
 			elif cor == spike:
 				var tileIndex = 6
 				newTileMap.set_cell(x,y,tileIndex)
-	newTileMap.set_owner(get_tree().get_edited_scene_root())
+	#add_child(newTileMap)
+	call_deferred("add_child", newTileMap)
+	var rooms = get_tree().get_nodes_in_group("Rooms")
+	for room in rooms:
+		if room.name == newTileMap.name:
+			room.connect("battle", self, "battle_mode")
 
 func gerar_dados_da_imagem(imagem):
 
@@ -280,7 +292,7 @@ func gerar_andar(bigMap, tile):
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
 				var posMeio = Coletar_posicao_do_tile(x+0.5,y+0.5,bigMap.cell_size,bigMap.transform.get_scale())
 				emit_signal("spawn", posMeio)
-				gerar_tilemap(pos,tile,'spawn.png', portas, index)
+				gerar_tilemap(pos,tile,'spawn.png', portas, index, 0)
 				index += 1
 				
 			elif minimapa[y][x] == "E":
@@ -288,33 +300,32 @@ func gerar_andar(bigMap, tile):
 				rng.randomize()
 				var sala = rng.randi_range(0,5)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png', portas, index)
+				gerar_tilemap(pos,tile,'enemy/sala'+str(sala)+'.png', portas, index, 1)
 				index += 1
 				
 			elif minimapa[y][x] == "K":
-				
-				var chave = true
 				rng.randomize()
 				var sala = rng.randi_range(0,5)
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
-				gerar_tilemap(pos,tile,'/enemy/sala'+str(sala)+'.png',portas, index)
+				gerar_tilemap(pos,tile,'enemy/sala'+str(sala)+'.png',portas, index, 2)
 				index += 1
 				
 			elif minimapa[y][x] == "O":
 				
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
 				var posMeio = Coletar_posicao_do_tile(x+0.5,y+0.5,bigMap.cell_size,bigMap.transform.get_scale())
-				print("quando cria: ", posMeio)
 				emit_signal("saida", posMeio)
-				gerar_tilemap(pos,tile,'exit.png',portas, index)
+				gerar_tilemap(pos,tile,'exit.png',portas, index, 3)
 				index += 1
 
 func _ready():
+	fechada = true
 	rng.randomize()
 	var tilemap = get_node('BigMap')
 	var tile = $TileMap
 	gerar_andar(tilemap, tile)
 	emit_signal("desci", andar)
+	
 func _on_portal_desceu():
 	
 	var rooms = get_tree().get_nodes_in_group("Rooms")
@@ -323,3 +334,19 @@ func _on_portal_desceu():
 	andar += 1
 	_ready()
 
+func battle_mode(nome):
+	pass
+
+func _process(delta):
+	check_key()
+
+func check_key():
+	var key = get_tree().get_nodes_in_group("Key")
+	if len(key) > 0:# and fechada == false:
+		if not key[0].is_connected("colected", self, "keyColected"):
+			key[0].connect("colected", self, "keyColected")
+			fechada = true
+
+func keyColected():
+	emit_signal("Open")
+	pass
