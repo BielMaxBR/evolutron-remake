@@ -1,24 +1,22 @@
 extends Camera2D
-
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
-
-
-		
+var vida: int
+export var tela_de_morte = false
+func _process(delta):
+	vida = get_tree().get_nodes_in_group("Player")[0].vida
+	$life.text = str(vida)
+	$lifeBar.value = vida
+	if vida == 0:
+		tela_de_morte = true
+	if tela_de_morte:
+		$fundoEscuro.visible = true
+		$emorreu.visible = true
+		$TextureButton.visible = true
+		$TextureButton.disabled = false
+	else:
+		$fundoEscuro.visible = false
+		$emorreu.visible = false
+		$TextureButton.visible = false
+		$TextureButton.disabled = true
 func _on_KinematicBody2D_apareci(pos):
 	$".".position.x = pos.x
 	$".".position.y = pos.y

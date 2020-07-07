@@ -238,7 +238,8 @@ func gerar_tilemap(pos, tile, imagem, portas, index, type):
 	var rooms = get_tree().get_nodes_in_group("Rooms")
 	for room in rooms:
 		if room.name == newTileMap.name:
-			room.connect("battle", self, "battle_mode")
+			if not room.is_connected("battle", self, "battle_mode"):
+				room.connect("battle", self, "battle_mode")
 
 func gerar_dados_da_imagem(imagem):
 
@@ -349,4 +350,29 @@ func check_key():
 
 func keyColected():
 	emit_signal("Open")
+	pass
+
+
+func _on_TextureButton_button_down():
+	reset()
+
+func reset():
+	$Player.dano = 0
+	$Player.reset = true
+	$Player.vida = 5
+	$Camera2D.tela_de_morte = false
+	keyColected()
+	var rooms = get_tree().get_nodes_in_group("Rooms")
+	for room in rooms:
+		room.free()
+	andar = 0
+	_ready()
+	pass
+
+
+func _on_voltar_button_down():
+	reset()
+	inicio()
+	pass # Replace with function body.
+func inicio():
 	pass

@@ -1,21 +1,24 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://Scripts/Map_generator.gd" type="Script" id=1]
 [ext_resource path="res://tileset.tres" type="TileSet" id=2]
 [ext_resource path="res://Scripts/KinematicBody2D.gd" type="Script" id=3]
-[ext_resource path="res://icon.png" type="Texture" id=4]
+[ext_resource path="res://tiles/buero.png" type="Texture" id=4]
 [ext_resource path="res://Scripts/Camera2D.gd" type="Script" id=5]
-[ext_resource path="res://anim/attack2.png" type="Texture" id=6]
-[ext_resource path="res://sounds/simple_attack.ogg" type="AudioStream" id=7]
-[ext_resource path="res://anim/attack4.png" type="Texture" id=8]
-[ext_resource path="res://anim/attack0.png" type="Texture" id=9]
-[ext_resource path="res://anim/attack3.png" type="Texture" id=10]
-[ext_resource path="res://anim/attack1.png" type="Texture" id=11]
-[ext_resource path="res://inimigos/arainha.tscn" type="PackedScene" id=12]
+[ext_resource path="res://upgrades/Upgrades.tscn" type="PackedScene" id=6]
+[ext_resource path="res://UI/hewegoagain.png" type="Texture" id=12]
 [ext_resource path="res://Scripts/portal.gd" type="Script" id=13]
 [ext_resource path="res://spritesheet.png" type="Texture" id=14]
 [ext_resource path="res://Scripts/Room.gd" type="Script" id=15]
+[ext_resource path="res://anim/walk/walk2.png" type="Texture" id=16]
 [ext_resource path="res://arma.tscn" type="PackedScene" id=17]
+[ext_resource path="res://anim/walk/walk1.png" type="Texture" id=18]
+[ext_resource path="res://anim/walk/walk3.png" type="Texture" id=19]
+[ext_resource path="res://anim/walk/walk4.png" type="Texture" id=20]
+[ext_resource path="res://UI/health_bar.png" type="Texture" id=21]
+[ext_resource path="res://UI/emorreu.png" type="Texture" id=22]
+[ext_resource path="res://UI/fundoEscuro.png" type="Texture" id=23]
+[ext_resource path="res://UI/voltar.png" type="Texture" id=24]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 183.5, 135.5 )
@@ -28,21 +31,28 @@ extents = Vector2( 13.4879, 13.5601 )
 
 [sub_resource type="SpriteFrames" id=4]
 animations = [ {
-"frames": [ ExtResource( 9 ), ExtResource( 11 ), ExtResource( 6 ), ExtResource( 10 ), ExtResource( 8 ), null, ExtResource( 9 ) ],
+"frames": [ ExtResource( 18 ) ],
 "loop": true,
-"name": "default",
-"speed": 20.0
+"name": "stop",
+"speed": 1.0
+}, {
+"frames": [ ExtResource( 18 ), ExtResource( 16 ), ExtResource( 19 ), ExtResource( 20 ) ],
+"loop": true,
+"name": "Walk",
+"speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 27.7006, 27.46 )
+[sub_resource type="RectangleShape2D" id=7]
+extents = Vector2( 14.5, 12 )
+
+[sub_resource type="CircleShape2D" id=6]
+radius = 26.6426
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 1 )
 shape2d = SubResource( 1 )
 RoomScript = ExtResource( 15 )
 layers = 15
-numero_de_salas = 4
 
 [node name="BigMap" type="TileMap" parent="."]
 tile_set = ExtResource( 2 )
@@ -51,7 +61,7 @@ cell_quadrant_size = 6
 format = 1
 
 [node name="TileMap" type="TileMap" parent="."]
-position = Vector2( 26.9087, -713.08 )
+position = Vector2( 469.159, -793.897 )
 scale = Vector2( 2, 2 )
 z_index = -1
 tile_set = ExtResource( 2 )
@@ -74,7 +84,7 @@ position = Vector2( 0.0456543, 0.540009 )
 shape = SubResource( 2 )
 
 [node name="Camera2D" type="Camera2D" parent="."]
-z_index = 1
+z_index = 5
 current = true
 process_mode = 0
 script = ExtResource( 5 )
@@ -92,39 +102,94 @@ __meta__ = {
 }
 
 [node name="andar" type="Label" parent="Camera2D"]
-margin_left = 231.232
-margin_top = -136.922
-margin_right = 281.232
-margin_bottom = -122.922
+margin_left = 227.892
+margin_top = -279.898
+margin_right = 277.892
+margin_bottom = -265.898
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Player" type="KinematicBody2D" parent="."]
+[node name="lifeBar" type="TextureProgress" parent="Camera2D"]
+margin_left = -371.889
+margin_top = -297.496
+margin_right = -307.889
+margin_bottom = -280.496
+rect_scale = Vector2( 3.08861, 1.30592 )
+max_value = 15.0
+value = 15.0
+texture_progress = ExtResource( 21 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="life" type="Label" parent="Camera2D"]
+margin_left = -394.173
+margin_top = -294.414
+margin_right = -354.173
+margin_bottom = -280.414
+text = "0
+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="fundoEscuro" type="Sprite" parent="Camera2D"]
+visible = false
+texture = ExtResource( 23 )
+
+[node name="emorreu" type="Sprite" parent="Camera2D"]
+visible = false
+position = Vector2( -12.7853, -94.7786 )
+texture = ExtResource( 22 )
+
+[node name="TextureButton" type="TextureButton" parent="Camera2D"]
+visible = false
+margin_left = -88.0
+margin_top = 79.0
+margin_right = -24.0
+margin_bottom = 103.0
+rect_scale = Vector2( 2.7277, 3.18331 )
+disabled = true
+texture_normal = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="voltar" type="TextureButton" parent="Camera2D"]
+visible = false
+margin_left = -87.0
+margin_top = 161.0
+margin_right = -23.0
+margin_bottom = 177.0
+rect_scale = Vector2( 2.70832, 2.37728 )
+disabled = true
+texture_normal = ExtResource( 24 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Player" type="KinematicBody2D" parent="." groups=[
+"Player",
+]]
+z_index = 1
 collision_layer = 3075
 collision_mask = 15
 script = ExtResource( 3 )
 cam = NodePath("../Camera2D")
-aranha = NodePath("../arainha")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource( 3 )
 
-[node name="Sprite" type="Sprite" parent="Player"]
-position = Vector2( -0.0834296, -0.0834274 )
-scale = Vector2( 0.461208, 0.44559 )
-texture = ExtResource( 4 )
-
-[node name="attack" type="AnimatedSprite" parent="Player"]
-scale = Vector2( 1.12, 2 )
+[node name="Sprite" type="AnimatedSprite" parent="Player"]
+position = Vector2( 0, -5 )
+scale = Vector2( 2, 2 )
 frames = SubResource( 4 )
-speed_scale = 1.2
-offset = Vector2( 20, 0 )
-
-[node name="Sound" type="AudioStreamPlayer" parent="Player/attack"]
-stream = ExtResource( 7 )
+animation = "stop"
+playing = true
 
 [node name="ponta" type="Sprite" parent="Player"]
+visible = false
 position = Vector2( 2.94961, 0 )
 scale = Vector2( 0.508399, 0.305512 )
 texture = ExtResource( 14 )
@@ -132,33 +197,44 @@ offset = Vector2( 30, 0 )
 
 [node name="arma" parent="Player" instance=ExtResource( 17 )]
 
-[node name="arainha" parent="." instance=ExtResource( 12 )]
-position = Vector2( -311.479, -216.147 )
+[node name="Area_de_dano" type="Area2D" parent="Player"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Area_de_dano"]
+visible = false
+position = Vector2( -0.5, 0 )
+shape = SubResource( 7 )
+
+[node name="Upgrades" parent="Player" instance=ExtResource( 6 )]
+position = Vector2( 0, -5 )
 
 [node name="portal" type="Area2D" parent="."]
-position = Vector2( -148.188, -93.4436 )
+position = Vector2( -615.132, -97.9334 )
 collision_layer = 2147483663
 collision_mask = 15
 script = ExtResource( 13 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="portal"]
-visible = false
-shape = SubResource( 5 )
+z_as_relative = false
+shape = SubResource( 6 )
 
 [node name="Sprite" type="Sprite" parent="portal"]
+scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 [connection signal="desci" from="." to="Camera2D" method="_on_Node2D_desci"]
 [connection signal="map" from="." to="portal" method="_on_Node2D_map"]
 [connection signal="map" from="." to="Camera2D" method="_on_Node2D_map"]
 [connection signal="saida" from="." to="portal" method="_on_Node2D_saida"]
 [connection signal="spawn" from="." to="Player" method="_on_Node2D_spawn"]
+[connection signal="button_down" from="Camera2D/TextureButton" to="." method="_on_TextureButton_button_down"]
+[connection signal="button_down" from="Camera2D/voltar" to="." method="_on_voltar_button_down"]
+[connection signal="action" from="Player" to="Player" method="_on_Player_action"]
 [connection signal="action" from="Player" to="Player/arma" method="_on_Player_action"]
 [connection signal="apareci" from="Player" to="Camera2D" method="_on_KinematicBody2D_apareci"]
 [connection signal="baixo" from="Player" to="Camera2D" method="_on_KinematicBody2D_baixo"]
 [connection signal="cima" from="Player" to="Camera2D" method="_on_KinematicBody2D_cima"]
 [connection signal="direita" from="Player" to="Camera2D" method="_on_KinematicBody2D_direita"]
 [connection signal="esquerda" from="Player" to="Camera2D" method="_on_KinematicBody2D_esquerda"]
-[connection signal="animation_finished" from="Player/attack" to="Player" method="_on_attack_animation_finished"]
+[connection signal="area_entered" from="Player/Area_de_dano" to="Player" method="_on_Area_de_dano_area_entered"]
 [connection signal="body_entered" from="portal" to="portal" method="_on_portal_body_entered"]
 [connection signal="desceu" from="portal" to="." method="_on_portal_desceu"]
 [connection signal="pos" from="portal" to="Player" method="_on_portal_pos"]

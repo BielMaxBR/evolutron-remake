@@ -13,7 +13,7 @@ func _process(delta):
 	else:
 		$Normal/Normal/CollisionShape2D.disabled = true
 	pass # Replace with function body.
-
+	$Normal/Normal.dano += get_tree().get_nodes_in_group("Player")[0].dano
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
