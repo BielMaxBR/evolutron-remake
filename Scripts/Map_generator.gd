@@ -4,19 +4,21 @@ export(Script) var RoomScript
 export(int, LAYERS_2D_PHYSICS) var layers
 export(int, 0, 100) var numero_de_salas = 8
 export(Vector2) var area = Vector2(6,6)
+#export(NodePath) onready var SlimeBossPath  = preload("res://Chefes/Slime.tscn")
 const parede = Color("#914400")*255
 const chao = Color("#48ff00")*255
 const porta = Color("#ffee00")*255
 const muro = Color("#006d0f")*255
 const spike = Color("#000000")*255
 var rng = RandomNumberGenerator.new()
-var andar = 0
+export var andar = 1
 var fechada: bool
 signal spawn(pos)
 signal map(mapa)
 signal saida(pos)
 signal desci(andar)
 signal Open
+signal boss(andar, meio)
 func gerar_mapa_aberto():
 	return '0'
 
@@ -54,11 +56,10 @@ func se_tem(sala,salas):
 		y = int(tum[1])
 	var xy = [x,y]
 	var toc = tuc.has(Array(xy))
-	#print(tuc, "\n", toc)
 	return toc
 
 func nova_sala(salas, area):
-	#print("salas atuais ", salas)
+
 	rng.randomize()
 	var sala_escolhida = salas[rng.randi_range(0, len(salas)-1)]
 	if sala_escolhida == null:
@@ -67,31 +68,23 @@ func nova_sala(salas, area):
 	var baixo = [sala_escolhida[0], sala_escolhida[1]+1]
 	var esquerda = [sala_escolhida[0]-1, sala_escolhida[1]]
 	var direita = [sala_escolhida[0]+1, sala_escolhida[1]]
-	
 	var salas_possiveis = []
-	#print("escolhida ", sala_escolhida)
 	var cimaX = int(cima[0])
 	var cimaY = int(cima[1])
 	if cima[1] >= 1 and se_tem(cima,salas) == false:
 		salas_possiveis.append([cimaX,cimaY])
-	#	print(">>> cima ",cima, salas.find(Array([cimaX,cimaY])))
 	var direitaX = int(direita[0])
 	var direitaY = int(direita[1])
 	if direita[0] <= 5 and se_tem(direita,salas) == false:
 		salas_possiveis.append([direitaX,direitaY])
-	#	print(">>> direita ",direita, salas.find(Array([direitaX,direitaY])))
 	var baixoX = int(baixo[0])
 	var baixoY = int(baixo[1])
 	if baixo[1] <= 5 and se_tem(baixo,salas) == false:
 		salas_possiveis.append([baixoX,baixoY])
-	#	print(">>> baixo ",baixo, salas.find(Array([baixoX,baixoY])))
 	var esquerdaX = int(esquerda[0])
 	var esquerdaY = int(esquerda[1])
 	if esquerda[0] >= 1 and se_tem(esquerda,salas) == false:
 		salas_possiveis.append([esquerdaX,esquerdaY])
-	#	print(">>> esquerda ",[esquerdaX,esquerdaY], salas.find(Array([esquerdaX,esquerdaY])))
-
-
 	if len(salas_possiveis) >= 1:
 
 			rng.randomize()
@@ -104,12 +97,8 @@ func nova_sala(salas, area):
 					i = true
 					
 			if salas.has(Array([int(sala_sorteada[0]),int(sala_sorteada[1])])) == false and sala_sorteada != null:
-	#			print("sala sorteada ",sala_sorteada)
-	#			print("---")
-	#			print(se_tem(sala_sorteada, salas))
 				return sala_sorteada
 			else:
-	#			print(se_tem(sala_sorteada, salas))
 				return nova_sala(salas, area)
 	else:
 		return nova_sala(salas, area)
@@ -173,7 +162,6 @@ func gerar_tilemap(pos, tile, imagem, portas, index, type):
 	newTileMap.add_child(SalaCollider)
 	newTileMap.call_deferred("set", "script", RoomScript)
 	newTileMap.set_script(RoomScript)
-	#print(RoomScript)
 	newTileMap.name = "Room" + str(index)
 	newTileMap.add_to_group("Rooms")
 	newTileMap.position = pos
@@ -182,7 +170,7 @@ func gerar_tilemap(pos, tile, imagem, portas, index, type):
 	newTileMap.tile_set = tile.tile_set
 	newTileMap.z_index = -1
 	newTileMap.tipo = type
-
+	##	newTileMap.SlimeBossPath = SlimeBossPath
 	
 	for x in range(0,25):
 		for y in range(0,19):
@@ -311,14 +299,18 @@ func gerar_andar(bigMap, tile):
 				gerar_tilemap(pos,tile,'enemy/sala'+str(sala)+'.png',portas, index, 2)
 				index += 1
 				
-			elif minimapa[y][x] == "O":
-				
+			elif minimapa[y][x] == "O": 
 				var pos = Coletar_posicao_do_tile(x,y,bigMap.cell_size,bigMap.transform.get_scale())
 				var posMeio = Coletar_posicao_do_tile(x+0.5,y+0.5,bigMap.cell_size,bigMap.transform.get_scale())
-				emit_signal("saida", posMeio)
-				gerar_tilemap(pos,tile,'exit.png',portas, index, 3)
+				print(andar != 3)
+				if andar != 3 and andar != 6 and andar != 9:
+					print("não é chefe")
+					emit_signal("saida", posMeio)
+					gerar_tilemap(pos,tile,'exit.png',portas, index, 3)
+				else:
+					print('HORA DO BOSS!')
+					boss_room(andar,pos, posMeio, tile, portas, index)
 				index += 1
-
 func _ready():
 	fechada = true
 	rng.randomize()
@@ -328,7 +320,6 @@ func _ready():
 	emit_signal("desci", andar)
 	
 func _on_portal_desceu():
-	
 	var rooms = get_tree().get_nodes_in_group("Rooms")
 	for room in rooms:
 		room.free()
@@ -339,11 +330,12 @@ func battle_mode(nome):
 	pass
 
 func _process(delta):
+	find_boss()
 	check_key()
 
 func check_key():
 	var key = get_tree().get_nodes_in_group("Key")
-	if len(key) > 0:# and fechada == false:
+	if len(key) > 0:
 		if not key[0].is_connected("colected", self, "keyColected"):
 			key[0].connect("colected", self, "keyColected")
 			fechada = true
@@ -352,10 +344,9 @@ func keyColected():
 	emit_signal("Open")
 	pass
 
-
 func _on_TextureButton_button_down():
 	reset()
-
+	
 func reset():
 	$Player.dano = 0
 	$Player.reset = true
@@ -365,14 +356,23 @@ func reset():
 	var rooms = get_tree().get_nodes_in_group("Rooms")
 	for room in rooms:
 		room.free()
-	andar = 0
+	andar = 1
 	_ready()
 	pass
-
 
 func _on_voltar_button_down():
 	reset()
 	inicio()
-	pass # Replace with function body.
+	pass 
+
 func inicio():
+	pass
+
+func boss_room(andar, pos, meio, tile,portas,index):
+	gerar_tilemap(pos,tile,'boss.png',portas, index, 4)
+	yield(get_tree().create_timer(1),"timeout")
+	emit_signal("boss", andar, meio)
+	pass
+	
+func find_boss():
 	pass

@@ -6,7 +6,7 @@ export(int) var tipo
 signal battle(room)
 
 var rng = RandomNumberGenerator.new()
-
+onready var SlimeBossPath = preload("res://Chefes/Slime.tscn")
 onready var aranhaPath = preload("res://inimigos/arainha.tscn")
 onready var portPath = preload("res://rooms/porta.tscn")
 onready var keyPath = preload("res://rooms/chave.tscn")
@@ -14,18 +14,23 @@ onready var lockPath = preload("res://rooms/porta_fechada.tscn")
 var battle = false
 var jaBatalhou = false
 var chave = false
-
+var chefeVivo = false
+var chefes = [["Slime"],["Arraia"],["Gray"]]
+var chefe
+var bossPos
 func _init():
 	_process(1)
-	get_child(0).connect("body_entered",self, "colidiu")
 	
 func _ready():
+	get_child(0).connect("body_entered",self, "colidiu")
 	print(name," ", tipo)
-	if tipo == 3:
+	if tipo == 3 or tipo == 4:
 		print("portas trancadas")
 		get_parent().connect("Open", self, "OpenDoor")
 		create_locked()
-
+	if tipo == 4:
+		print("é chefe msm")
+		get_parent().connect("boss", self, "spawnBoss")
 func check_enemies():
 	
 	var enemies = get_tree().get_nodes_in_group("Enemies"+name)
@@ -46,8 +51,11 @@ func colidiu(body):
 			if not jaBatalhou:
 				start_battle()
 				jaBatalhou = true
-		
 		emit_signal("battle", name)
+	if tipo == 4:
+		print("hora do chefe")
+		#if chefe == "Slime":
+		Slime_battle()
 
 func _process(delta):
 	if tipo == 1 or tipo == 2:
@@ -102,7 +110,7 @@ func Coletar_posicoes_possiveis():
 		posPortList.append(converter_posicao(port))
 	var enemyCount = 5
 	
-	yield(countdown(), "completed") # waiting for the countdown() function to complete
+	yield(countdown(), "completed")
 	battle = true
 	for n in enemyCount:
 		rng.randomize()
@@ -119,7 +127,7 @@ func Coletar_posicoes_possiveis():
 		get_tree().get_root().add_child(porta)
 
 func countdown():
-	yield(get_tree(), "idle_frame") # returns a GDScriptFunctionState object to _ready()
+	yield(get_tree(), "idle_frame")
 	yield(get_tree().create_timer(0.5), "timeout")
 
 func OpenDoor():
@@ -127,6 +135,7 @@ func OpenDoor():
 	var portas = get_tree().get_nodes_in_group("Lock"+name)
 	for porta in portas:
 		porta.free()
+	chave = true
 	pass
 	
 func create_locked():
@@ -146,3 +155,37 @@ func create_locked():
 		porta.add_to_group("Lock"+name)
 		get_tree().get_root().call_deferred("add_child", porta)
 
+func spawnBoss(andar, meio):
+	rng.randomize()
+	chefe = rng.randi_range(0,len(chefes[0])-1)
+	bossPos = meio
+
+func Slime_battle():
+	if chave:
+		var portList: Array
+		for x in range(0,25):
+			for y in range(0,19):
+				var tile = get_cell(x,y)
+				if tile == 4:
+					portList.append(Vector2(x,y))
+		var posPortList: Array
+		for port in portList:
+			posPortList.append(converter_posicao(port))
+		for p in posPortList:
+			var porta = portPath.instance()
+			porta.z_index = 1
+			#porta.position = p
+			porta.add_to_group("Ports"+name)
+			get_tree().get_root().call_deferred("add_child", porta)
+		if not chefeVivo:
+			var boss = SlimeBossPath.instance()
+			boss.position = bossPos
+			get_tree().get_root().call_deferred("add_child", boss)
+			print("spawnando chefe")
+			boss.connect("morreu", self, "DeathBoss")
+			chefeVivo = true
+
+func DeathBoss():
+	print("FIM")
+	get_parent().get_child(4).position = bossPos
+	pass

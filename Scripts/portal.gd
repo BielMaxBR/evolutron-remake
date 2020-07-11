@@ -1,16 +1,8 @@
 extends Area2D
 
 signal desceu
-
-func _ready():
-
-	pass 
-
 signal pos(pos)
 
-func _input(event):
-	if event.is_action_pressed("test"):
-		print("portal: ",position)
 func Coletar_posicao_do_tile(x, y, tile, scale):
 	var rex = (tile.x*x)*scale.x
 	var rey = (tile.y*y)*scale.y
@@ -21,8 +13,6 @@ func _process(delta):
 	pass
 	
 func _on_Node2D_saida(pos):
-
-
 	position = pos
 
 func _on_portal_body_entered(body):
@@ -36,5 +26,5 @@ func _on_Node2D_map(mapa):
 		for x in range(0, len(mapa[y])-1):
 			if mapa[y][x] == "O":
 				var posMeio = Coletar_posicao_do_tile(x+0.5,y+0.5,Vector2(800,608),Vector2(1,1))
-				_on_Node2D_saida(posMeio)
+				#_on_Node2D_saida(posMeio)
 	pass # Replace with function body.

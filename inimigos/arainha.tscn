@@ -46,10 +46,10 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=7]
+[sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 5, 9 )
 
-[sub_resource type="CircleShape2D" id=6]
+[sub_resource type="CircleShape2D" id=7]
 radius = 37.3517
 
 [node name="arainha" type="KinematicBody2D"]
@@ -93,13 +93,13 @@ script = ExtResource( 11 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Attack/ataque"]
 visible = false
 position = Vector2( -1.40767, 0.18729 )
-shape = SubResource( 7 )
+shape = SubResource( 6 )
 disabled = true
 
 [node name="Area_de_ataque" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area_de_ataque"]
-shape = SubResource( 6 )
+shape = SubResource( 7 )
 
 [node name="attackTimer" type="Timer" parent="."]
 autostart = true

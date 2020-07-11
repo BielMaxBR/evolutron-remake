@@ -19,6 +19,7 @@ signal reset
 signal action(acao)
 signal apareci(pos)
 signal upgrade(id)
+signal frame(anim,frame)
 var andando = false
 var velocity = Vector2()
 
@@ -83,6 +84,9 @@ func _input(event):
 
 		if event.is_action_pressed("0"):
 			emit_signal("action", "swap0")
+			
+		if event.is_action_pressed("scape"):
+			position.y -= 50
 
 func get_camera():
 	#print(cam)
@@ -146,4 +150,9 @@ func _on_Area_de_dano_area_entered(area):
 		emit_signal("upgrade", area.id)
 		print("coletado")
 		area.queue_free()
+	pass # Replace with function body.
+
+
+func _on_Sprite_frame_changed():
+	emit_signal("frame",$Sprite.animation, $Sprite.frame)
 	pass # Replace with function body.

@@ -42,7 +42,7 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=7]
+[sub_resource type="RectangleShape2D" id=5]
 extents = Vector2( 14.5, 12 )
 
 [sub_resource type="CircleShape2D" id=6]
@@ -53,6 +53,8 @@ script = ExtResource( 1 )
 shape2d = SubResource( 1 )
 RoomScript = ExtResource( 15 )
 layers = 15
+numero_de_salas = 3
+andar = 3
 
 [node name="BigMap" type="TileMap" parent="."]
 tile_set = ExtResource( 2 )
@@ -202,7 +204,7 @@ offset = Vector2( 30, 0 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player/Area_de_dano"]
 visible = false
 position = Vector2( -0.5, 0 )
-shape = SubResource( 7 )
+shape = SubResource( 5 )
 
 [node name="Upgrades" parent="Player" instance=ExtResource( 6 )]
 position = Vector2( 0, -5 )
@@ -234,6 +236,7 @@ texture = ExtResource( 4 )
 [connection signal="cima" from="Player" to="Camera2D" method="_on_KinematicBody2D_cima"]
 [connection signal="direita" from="Player" to="Camera2D" method="_on_KinematicBody2D_direita"]
 [connection signal="esquerda" from="Player" to="Camera2D" method="_on_KinematicBody2D_esquerda"]
+[connection signal="frame_changed" from="Player/Sprite" to="Player" method="_on_Sprite_frame_changed"]
 [connection signal="area_entered" from="Player/Area_de_dano" to="Player" method="_on_Area_de_dano_area_entered"]
 [connection signal="body_entered" from="portal" to="portal" method="_on_portal_body_entered"]
 [connection signal="desceu" from="portal" to="." method="_on_portal_desceu"]
